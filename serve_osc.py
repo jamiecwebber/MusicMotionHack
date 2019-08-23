@@ -14,9 +14,9 @@ import argparse
 
 def run_network_step(unused_addr, args, *volume):
 	 	print("[{0}] ~ {1}".format(args[0], volume))
-	#print((np.array(volume)*2)-1)
+		print(np.array(volume))
 	
-		update = esn.step((np.array(volume)*2)-1)
+		update = esn.step(np.array(volume))
 		print(update)
 		count = 0
 		client.send_message("/ESN", update)
@@ -25,7 +25,7 @@ def run_network_step(unused_addr, args, *volume):
 
 if __name__ == '__main__':
 
-	esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=1, input_sparcity=0.6, damping=0.1, weight_scaling=1.25, sparcity=0.5)
+	esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=1, input_sparcity=0.6, damping=0.1, weight_scaling=1.15, sparcity=0.5)
 
 	print('ESN online')
 	print('Spectral radius: {}'.format(np.max(np.abs(la.eig(esn.weights_)[0]))))
@@ -41,14 +41,14 @@ if __name__ == '__main__':
 	outparser.add_argument("--port", type=int, default=9000, help="The port the OSC server is listening on")
 	args = outparser.parse_args()
 
+	client = udp_client.SimpleUDPClient(args.ip, args.port)
+
+
 	# for incoming messages
 	inparser = argparse.ArgumentParser()
 	inparser.add_argument("--ip", default='127.0.0.1', help='the ip to listen on')
 	inparser.add_argument("--port", type=int, default=12000, help='The port to listen on')
 	inargs = inparser.parse_args()
-
-	client = udp_client.SimpleUDPClient(args.ip, args.port)
-
 
 	dispatcher = dispatcher.Dispatcher()
 	dispatcher.map("/outputs", run_network_step, "Echo State Network")
@@ -57,3 +57,8 @@ if __name__ == '__main__':
 		(inargs.ip, inargs.port), dispatcher)
 	print("serving on {}".format(server.server_address))
 	server.serve_forever()
+
+	# run the ESN
+	for i in range(200):
+		run_network_step
+
