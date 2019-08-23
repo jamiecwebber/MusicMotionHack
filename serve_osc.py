@@ -15,11 +15,7 @@ import argparse
 def run_network_step(unused_addr, args, *volume):
 	# print("[{0}] ~ {1}".format(args[0], volume))
 	#print((np.array(volume)*2)-1)
-	if count:
-		count += 1
-	else:
-		count = 0
-	if count == 30:
+	
 		update = esn.step((np.array(volume)*2)-1)
 		print(update)
 		count = 0
