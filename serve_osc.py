@@ -13,13 +13,13 @@ import argparse
 
 
 def run_network_step(unused_addr, args, *volume):
-	 	print("[{0}] ~ {1}".format(args[0], volume))
-		print(np.array(volume))
+	print("[{0}] ~ {1}".format(args[0], volume))
+	print(np.array(volume))
 	
-		update = esn.step(np.array(volume))
-		print(update)
-		count = 0
-		client.send_message("/ESN", update)
+	update = esn.step(np.array(volume))
+	print(update)
+	count = 0
+	client.send_message("/ESN", update)
 		
 
 
@@ -53,12 +53,17 @@ if __name__ == '__main__':
 	dispatcher = dispatcher.Dispatcher()
 	dispatcher.map("/outputs", run_network_step, "Echo State Network")
 
+	# run the ESN
+	for i in range(200):
+		print(i)
+		run_network_step('blah','ESN',y[100000+i])
+		time.sleep(0.5)
+
+
 	server = osc_server.ThreadingOSCUDPServer(
 		(inargs.ip, inargs.port), dispatcher)
 	print("serving on {}".format(server.server_address))
 	server.serve_forever()
 
-	# run the ESN
-	for i in range(200):
-		run_network_step
+	
 
