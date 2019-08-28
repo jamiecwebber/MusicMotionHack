@@ -17,7 +17,7 @@ def run_network_step(unused_addr, args, *volume):
 	#print(np.array(volume))
 	print(volume)
 	update = esn.step(np.array(volume))
-	print(update)
+	print(update.max())
 	for index, i in enumerate(update):
 		client.send_message(f"/ESN/{index}", ((i+1)/2))
 
@@ -33,7 +33,11 @@ if __name__ == '__main__':
 	#esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=3, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.55, sparcity=0.7)
 	#esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=3, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.25, sparcity=0.7)
 	#esn = SimpleESN(n_readout=25, n_components=25, n_inputs=1, input_gain=1, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.15, sparcity=0.95)
-	esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.3, damping=0.8, random_state=95328, weight_scaling=3, sparcity=0.0685)
+	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.3, damping=0.8, random_state=95328, weight_scaling=3, sparcity=0.0685)
+	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.3, damping=0.8, random_state=95328, weight_scaling=1.15, sparcity=0.7)
+	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.3, damping=0.8, random_state=95398, weight_scaling=1.25, sparcity=0.7)
+	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.7, damping=0.9, random_state=95398, weight_scaling=1.65, sparcity=0.7)
+	esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.7, damping=0.4, random_state=95398, weight_scaling=2.0, sparcity=0.7)
 
 
 	print('ESN online')
@@ -63,7 +67,7 @@ if __name__ == '__main__':
 	dispatcher.map("/outputs", run_network_step, "Echo State Network")
 
 	# run the ESN
-	for i in range(200):
+	for i in range(20000):
 		print(i)
 		run_network_step('blah','ESN',y[400000+i],y[500000+i])
 		time.sleep(0.1)
