@@ -18,19 +18,20 @@ def run_network_step(unused_addr, args, *volume):
 	
 	update = esn.step(np.array(volume))
 	print(update)
-	count = 0
-	# for index, i in enumerate(update):
-	#client.send_message(f"/ESN/{index}", i)
+	for index, i in enumerate(update):
+		client.send_message(f"/ESN/{index}", ((i+1)/2))
 
-	client.send_message(f'/ESN/0', update[0])
+	#client.send_message(f'/ESN/6', update[6])
 
 		
 
 
 if __name__ == '__main__':
 
-	esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=6, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.15, sparcity=0.7)
+	# esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=6, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.55, sparcity=0.7)
 
+	#esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=3, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.55, sparcity=0.7)
+	esn = SimpleESN(n_readout=7, n_components=7, n_inputs=1, input_gain=3, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.25, sparcity=0.7)
 	print('ESN online')
 	print('Spectral radius: {}'.format(np.max(np.abs(la.eig(esn.weights_)[0]))))
 
@@ -58,10 +59,14 @@ if __name__ == '__main__':
 	dispatcher.map("/outputs", run_network_step, "Echo State Network")
 
 	# run the ESN
-	for i in range(5000):
+	for i in range(200):
 		print(i)
-		run_network_step('blah','ESN',y[880000+i])
-		time.sleep(0.2)
+		run_network_step('blah','ESN',y[400000+i])
+		time.sleep(0.1)
+
+	for i in range(100):
+		run_network_step('blah','ESN',0)
+		time.sleep(0.1)
 
 
 	server = osc_server.ThreadingOSCUDPServer(
