@@ -37,7 +37,8 @@ if __name__ == '__main__':
 	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.3, damping=0.8, random_state=95328, weight_scaling=1.15, sparcity=0.7)
 	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.3, damping=0.8, random_state=95398, weight_scaling=1.25, sparcity=0.7)
 	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.7, damping=0.9, random_state=95398, weight_scaling=1.65, sparcity=0.7)
-	esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.7, damping=0.4, random_state=95398, weight_scaling=2.0, sparcity=0.7)
+	#esn = SimpleESN(n_readout=16, n_components=16, n_inputs=2, input_gain=3, input_sparcity=0.7, damping=0.4, random_state=95398, weight_scaling=2.0, sparcity=0.7)
+	esn = SimpleESN(n_readout=20, n_components=20, n_inputs=2, input_gain=3, input_sparcity=1, damping=0.9, random_state=95326, weight_scaling=1.6, sparcity=0.75)
 
 
 	print('ESN online')
