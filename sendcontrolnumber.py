@@ -16,7 +16,6 @@ if __name__ == '__main__':
 	client = udp_client.SimpleUDPClient(args.ip, args.port)
 	print(args.channel[0])
 
-
 	client.send_message(f"/ESN/{sys.argv[1]}", args.channel[0])
 
 
