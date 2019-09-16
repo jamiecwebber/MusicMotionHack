@@ -29,10 +29,10 @@ if __name__ == '__main__':
 	esn = SimpleESN(n_readout=20, 
                 n_components=20, 
                 n_inputs=1, 
-                input_gain=1, 
+                input_gain=3, 
                 input_sparcity=1, 
                 damping=0.9, 
-                weight_scaling=1.1, 
+                weight_scaling=1.5, 
                 sparcity=1.0,
                 random_state=31337)
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
 	# for outgoing messages
 	outparser = argparse.ArgumentParser()
-	outparser.add_argument("--ip", default='192.168.1.100', help='The ip of the OSC server')
+	outparser.add_argument("--ip", default='172.16.42.2', help='The ip of the OSC server')
 	outparser.add_argument("--port", type=int, default=8000, help="The port the OSC server is listening on")
 	args = outparser.parse_args()
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 	dispatcher.map("/outputs", run_network_step, "Echo State Network")
 
 	# run the ESN
-	for i in range(100):
+	for i in range(20000):
 		print(i)
 		run_network_step('blah','ESN',y[400000+i])
 		time.sleep(0.3)
