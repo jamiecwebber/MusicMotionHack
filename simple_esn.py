@@ -89,7 +89,7 @@ class SimpleESN(BaseEstimator, TransformerMixin):
 
 
     def __init__(self, n_readout, n_inputs=1, input_sparcity=0.1, n_components=100, damping=0.5, input_gain=1.0,
-                 weight_scaling=0.9, discard_steps=0, random_state=None, sparcity=0.05):
+                 weight_scaling=0.9, discard_steps=0, random_state=None, prune_weights=False, sparcity=0.05):
         self.n_readout = n_readout
         self.n_components = n_components
         self.damping = damping
@@ -99,10 +99,16 @@ class SimpleESN(BaseEstimator, TransformerMixin):
         self.sparcity = sparcity;
         self.input_sparcity = input_sparcity;
         self.input_gain = input_gain;
-        self.input_weights_ = self.random_state.rand(self.n_components,
-                                                         n_inputs)*2-1
-        self.weights_ = self.random_state.rand(self.n_components, self.n_components)*2-1
+        self.input_weights_ = self.random_state.uniform(-1,1,size=(self.n_components, n_inputs))
+        self.weights_ = self.random_state.uniform(-1,1, size=(self.n_components, self.n_components))
+        self.prune_weights=prune_weights
         
+        
+        if self.prune_weights:
+            for index, i in enumerate(self.weights_):
+                for indexj, j in enumerate(i):
+                    if index <= indexj:
+                        self.weights_[index][indexj] = 0
 
         for index, i in enumerate(self.input_weights_):
             for indexj, j in enumerate(i):
@@ -114,14 +120,15 @@ class SimpleESN(BaseEstimator, TransformerMixin):
                 if self.random_state.rand() > self.sparcity:
                     self.weights_[index][indexj] = 0
         self.state_ = zeros(self.n_components)
+        
 
         spectral_radius = np.max(np.abs(la.eig(self.weights_)[0]))
         self.weights_ *=  self.weight_scaling / spectral_radius
 
     def step(self, X):
         curr_ = self.state_
-        curr_ = (1-self.damping)*curr_ + self.damping*tanh(
-            self.input_weights_.dot(X)*self.input_gain + self.weights_.dot(curr_))
+        curr_ = tanh((1-self.damping)*curr_ + self.damping*(
+            self.input_weights_.dot(X)*self.input_gain + self.weights_.dot(curr_)))
         self.state_ = curr_
         return self.state_
 
